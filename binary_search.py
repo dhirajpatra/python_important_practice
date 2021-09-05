@@ -1,4 +1,5 @@
 def contains(elements, value):
+    # from first to last of a sorted list
     left, right = 0, len(elements) - 1
     print(left)
     print(right)
@@ -9,8 +10,10 @@ def contains(elements, value):
         if elements[middle] == value:
             return True
         if elements[middle] < value:
+            # second half
             return contains(elements[middle + 1:], value)
         elif elements[middle] > value:
+            # first half
             return contains(elements[:middle], value)
 
     return False

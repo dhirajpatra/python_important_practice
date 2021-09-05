@@ -21,8 +21,8 @@ def binary_search(lo, hi, condition):
     return -1
 
 
+# decorator
 def locate_card(cards, query):
-    
     def condition(mid):
         if cards[mid] == query:
             if mid > 0 and cards[mid-1] == query:
@@ -36,7 +36,7 @@ def locate_card(cards, query):
     
     return binary_search(0, len(cards) - 1, condition)
 
-
+# test cases
 test = {
         'input': {
             'cards': [13, 11, 10, 7, 4, 3, 1, 0],

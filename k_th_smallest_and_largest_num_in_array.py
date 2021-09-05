@@ -3,7 +3,7 @@
 
 # Function to return k'th smallest
 # element in a given array
-def kthSmallest(arr, n, k):
+def kthSmallest(arr, k):
 
 	# Sort the given array
 	arr.sort()
@@ -14,7 +14,7 @@ def kthSmallest(arr, n, k):
 
 # Function to return k'th largest
 # element in a given array
-def kthLargest(arr, n, k):
+def kthLargest(arr, k):
 
 	# Sort the given array in desc order
 	arr.sort(reverse=True)
@@ -26,10 +26,9 @@ def kthLargest(arr, n, k):
 # Driver code
 if __name__=='__main__':
 	arr = [12, 3, 5, 7, 19]
-	n = len(arr)
 	k = 2
 	print("K'th smallest element is",
-		kthSmallest(arr, n, k))
+		kthSmallest(arr, k))
 	print("K'th largest element is",
-		kthLargest(arr, n, k))
+		kthLargest(arr, k))
 

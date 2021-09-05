@@ -1,4 +1,5 @@
 # this will calculate the total chocolate as per input
+# some wrapper also give free chocolate
 def get_chocolates(money, price, discount):
     # validations
     money = int(money)

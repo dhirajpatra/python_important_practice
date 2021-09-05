@@ -19,8 +19,8 @@ class Point:
 # A utility function to find square of
 # distance from point 'p' to point 'q'
 def distSq(p, q):
-	return (p.x - q.x) * (p.x - q.x) +\
-		(p.y - q.y) * (p.y - q.y)
+	return (p.x - q.x) ** 2 +\
+		(p.y - q.y) ** 2
 
 # This function returns true if (p1, p2, p3, p4)
 # form a square, otherwise false
@@ -40,17 +40,21 @@ def isSquare(p1, p2, p3, p4):
 	# 2) Square of length of (p2, p3) is same
 	# as twice the square of (p2, p4)
 
+	d1 = distSq(p3, p4)
+	d5 = distSq(p2, p3)
+	d6 = distSq(p2, p4)
+
 	if d2 == d3 and 2 * d2 == d4 and \
-					2 * distSq(p2, p4) == distSq(p2, p3):
+					2 * d1 == d5:
 		return True
 
 	# The below two cases are similar to above case
 	if d3 == d4 and 2 * d3 == d2 and \
-					2 * distSq(p3, p2) == distSq(p3, p4):
+					2 * d5 == d1:
 		return True
 
 	if d2 == d4 and 2 * d2 == d3 and \
-					2 * distSq(p2, p3) == distSq(p2, p4):
+					2 * d5 == d6:
 		return True
 
 	return False

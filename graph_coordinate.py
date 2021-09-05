@@ -5,7 +5,7 @@ def find_path(graph, start, end, path=[]):
       if start not in graph:
           return None
       for node in graph:
-          last_element = path.pop()
+          last_element = path[-1]
           if node[0] > last_element[0] and node[1] > last_element[1]:
               path.append(node)
       return path
@@ -75,4 +75,5 @@ end = [
   "46.494576128408"
 ]
 
-find_path(graph, start, end, path=[])
+path = find_path(graph, start, end, path=[])
+print(path)

@@ -34,7 +34,7 @@ def reverse_join_reversed_iter(string):
 reverse_join_reversed_iter(name)
 
 
-# This program will reverse the string that is passed
+# This program will reverse the string that is passed by iterable object
 # to it from the main function
 class Reverse:
     def __init__(self, data):
@@ -42,6 +42,7 @@ class Reverse:
         self.index = len(data)
 
     def __iter__(self):
+        # initialize the iterable
         return self
 
     def __next__(self):

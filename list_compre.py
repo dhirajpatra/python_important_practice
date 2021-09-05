@@ -43,3 +43,9 @@ b = [7, 8, 9]
 
 [(x,y) for x in a for y in b]    # nested iterators
 # output => [(1, 7), (1, 8), (1, 9), (2, 7), (2, 8), (2, 9), (3, 7), (3, 8), (3, 9)]
+
+# flatening all lists into one
+my_list = [[10,20,30],[40,50,60],[70,80,90]]
+flattened = [x for temp in my_list for x in temp]
+print(flattened)
+# output => [10, 20, 30, 40, 50, 60, 70, 80, 90]

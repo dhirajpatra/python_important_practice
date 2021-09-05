@@ -13,13 +13,14 @@ print("Server started and listing for client connections on port %s" % port)
 # true for indefinite
 while True:
     conn, addr = serv.accept()
-    from_client = ''
+    from_client = None
 
     while True:
+        # byte stream 
         data = conn.recv(4096)
         if not data:
             break
-        from_client += data.decode()
+        from_client = data.decode()
 
         response = "welcome " + from_client
         conn.send(response.encode())

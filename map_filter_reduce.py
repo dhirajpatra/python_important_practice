@@ -6,11 +6,13 @@ my_strings = ['a', 'b', 'c', 'd', 'e']
 my_numbers = [1, 2, 3, 4, 5]
 
 results = list(map(lambda x, y: (x, y), my_strings, my_numbers))
+# same result can achieve with  [(x,y) for x,y in zip(my_strings,my_numbers)]
 
 print(results)
 
 pos_check_numbers = ['534', '7766', '8533']
 pos_check_numbers = ','.join(map(str, pos_check_numbers)) 
+print(pos_check_numbers)
 
 circle_areas = [3.56773, 5.57668, 4.00914, 56.24241, 9.01344, 32.00013]
 

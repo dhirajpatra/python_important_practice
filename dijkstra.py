@@ -1,6 +1,6 @@
 import sys
 
-
+# dijkstra algorithm used for google map and other similar application
 # Function to find out which of the unvisited node
 # needs to be visited next
 def to_be_visited():

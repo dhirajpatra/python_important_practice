@@ -2,8 +2,6 @@
 Decorators allow you to make simple modifications to callable objects like
 functions, methods, or classes.
 """
-
-
 def multiply(multiplier):
     def multiply_generator(old_function):
         def new_function(*args, **kwds):
@@ -87,5 +85,26 @@ def good_test():
 
 good_test()
 
+# decorator function to convert to lowercase
+def lowercase_decorator(function):
+    def wrapper():
+        # it getst what calling function returned
+        func = function()
+        string_lowercase = func.lower()
+        return string_lowercase
+    return wrapper
 
+# decorator function to split words
+def splitter_decorator(function):
+   def wrapper():
+       func = function()
+       string_split = func.split()
+       return string_split
+   return wrapper
 
+@splitter_decorator # this is executed next
+@lowercase_decorator # this is executed first
+def hello():
+   return 'Hello World'
+
+print(hello())   # output => [ 'hello' , 'world' ]

@@ -1,4 +1,6 @@
 import json
+
+
 # your dump code for values, unmodified
 class BytesDump(json.JSONEncoder):
     def default(self, obj):

@@ -9,13 +9,13 @@ s2 = []
 
 
 def get_missing_number(lst):
-    return set(range(lst[len(lst) - 1])[1:]) - set(lst)
+    return set(range(lst[-1])[1:]) - set(lst)
 
 
 l = list(range(1, 100))
 l.remove(50)
 
-print(set(range(l[len(l) - 1])[1:]))
+print(set(range(l[-1])[1:]))
 print('=' * 100)
 print(set(l))
 print(get_missing_number(l))

@@ -11,6 +11,10 @@ graph = {
   'Augsburg' : []
 }
 
+# just printing the whole graph tree
+for key, val in graph.items():
+  print((key, val))
+
 visited = [] # List to keep track of visited nodes.
 queue = []     # Initialize a queue
 
@@ -27,5 +31,6 @@ def bfs(visited, graph, node):
         visited.append(neighbour)
         queue.append(neighbour)
 
+print("\nBreadth first search result\n")
 # Driver Code
 bfs(visited, graph, 'Frankfruit')

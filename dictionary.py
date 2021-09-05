@@ -1,13 +1,13 @@
 import operator
 # defaultdict
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 
 # Function to return a default values for keys that is not present
 def def_value():
     return "Not Present"
     
-# Defining the dict
+# Defining the defaultdict which never fail and return with default value
 d = defaultdict(def_value)
 d["a"] = 1
 d["b"] = 2
@@ -62,6 +62,11 @@ lst = dict.keys()
 # Sorted by key
 print("Sorted by key: ", sorted(lst))
 
+lst = dict.values()
+
+# sorted by values
+print("Sorted by values: ", sorted(lst))
+
 # Function argument unpacking
 def myfunc(x, y, z):
     print(x, y, z)
@@ -73,7 +78,7 @@ dict_vec = {'x': 1, 'y': 0, 'z': 1}
 myfunc(*tuple_vec)
 myfunc(**dict_vec)
 
-
+# used get function of dict
 def greeting(userid):
     return "Hi %s!" % name_for_userid.get(userid, "there")
 
@@ -105,3 +110,12 @@ print ("Count of all characters in GeeksforGeeks is :\n "
 #Count of all characters in GeeksforGeeks is :
 # {'r': 1, 'e': 4, 'k': 2, 'G': 2, 's': 2, 'f': 1, 'o': 1}
 
+
+d1 = {'key1': 50, 'key2': 100, 'key3':200}
+d2 = {'key1': 200, 'key2': 100, 'key4':300}
+new_dict = Counter(d1) + Counter(d2)
+print(new_dict)
+# Counter({'key4': 300, 'key1': 250, 'key2': 200, 'key3': 200})
+
+# merging two dict
+d1.update(d2)
