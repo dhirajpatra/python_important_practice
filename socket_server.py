@@ -5,7 +5,9 @@ serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 port = 80
 # binding to start server
-serv.bind(('0.0.0.0', port))
+# host = '0.0.0.0'
+host = '192.168.1.35'
+serv.bind((host, port))
 serv.listen(5)
 
 print("Server started and listing for client connections on port %s" % port)
