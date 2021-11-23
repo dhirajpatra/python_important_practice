@@ -129,6 +129,7 @@ def search(maze, cost, start, end):
 
         # test if goal is reached or not, if yes then return the path
         if current_node == end_node:
+            print("Destination reached")
             return return_path(current_node, maze)
 
         # Generate children from all adjacent squares
@@ -181,7 +182,7 @@ def search(maze, cost, start, end):
 
 if __name__ == '__main__':
     maze = [[0, 1, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0],
             [0, 1, 0, 1, 0, 0],
             [0, 1, 0, 0, 1, 0],
             [0, 0, 0, 0, 1, 0]]
@@ -191,6 +192,11 @@ if __name__ == '__main__':
     cost = 1  # cost per movement
 
     path = search(maze, cost, start, end)
-    print(path)
-    print('\n'.join([''.join(["{:" ">3d}".format(item) for item in row])
-                     for row in path]))
+    if path:
+        print('\n'.join([''.join(["{:" ">3d}".format(item) for item in row])
+                         for row in path]))
+        print("\n")
+        print('\n'.join([''.join(["{:" ">3d}".format(item) if item != -1 else '   ' for item in row])
+                         for row in path]))
+    else:
+        print('Destination not reachable')
