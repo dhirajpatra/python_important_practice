@@ -1,616 +1,196 @@
+import numpy as np
+
+
+class Node:
+    """
+        A node class for A* Pathfinding
+        parent is parent of the current Node
+        position is current position of the Node in the maze
+        g is cost from start to current Node
+        h is heuristic based estimated cost for current Node to end Node
+        f is total cost of present node i.e. :  f = g + h
+    """
+
+    def __init__(self, parent=None, position=None):
+        self.parent = parent
+        self.position = position
+
+        self.g = 0
+        self.h = 0
+        self.f = 0
+
+    def __eq__(self, other):
+        return self.position == other.position
+
+
+# This function return the path of the search
+def return_path(current_node, maze):
+    path = []
+    no_rows, no_columns = np.shape(maze)
+    # here we create the initialized result maze with -1 in every position
+    result = [[-1 for i in range(no_columns)] for j in range(no_rows)]
+    current = current_node
+    while current is not None:
+        path.append(current.position)
+        current = current.parent
+    # Return reversed path as we need to show from start to end path
+    path = path[::-1]
+    start_value = 0
+    # we update the path of start to end found by A-star serch with every step incremented by 1
+    for i in range(len(path)):
+        result[path[i][0]][path[i][1]] = start_value
+        start_value += 1
+    return result
+
+
+def search(maze, cost, start, end):
+    """
+        Returns a list of tuples as a path from the given start to the given end in the given maze
+        :param maze:
+        :param cost
+        :param start:
+        :param end:
+        :return:
+    """
+
+    # Create start and end node with initized values for g, h and f
+    start_node = Node(None, tuple(start))
+    start_node.g = start_node.h = start_node.f = 0
+    end_node = Node(None, tuple(end))
+    end_node.g = end_node.h = end_node.f = 0
+
+    # Initialize both yet_to_visit and visited list
+    # in this list we will put all node that are yet_to_visit for exploration.
+    # From here we will find the lowest cost node to expand next
+    yet_to_visit_list = []
+    # in this list we will put all node those already explored so that we don't explore it again
+    visited_list = []
+
+    # Add the start node
+    yet_to_visit_list.append(start_node)
+
+    # Adding a stop condition. This is to avoid any infinite loop and stop
+    # execution after some reasonable number of steps
+    outer_iterations = 0
+    max_iterations = (len(maze) // 2) ** 10
+
+    # what squares do we search . serarch movement is left-right-top-bottom
+    # (4 movements) from every positon
+
+    move = [[-1, 0],  # go up
+            [0, -1],  # go left
+            [1, 0],  # go down
+            [0, 1]]  # go right
+
+    """
+        1) We first get the current node by comparing all f cost and selecting the lowest cost node for further expansion
+        2) Check max iteration reached or not . Set a message and stop execution
+        3) Remove the selected node from yet_to_visit list and add this node to visited list
+        4) Perofmr Goal test and return the path else perform below steps
+        5) For selected node find out all children (use move to find children)
+            a) get the current postion for the selected node (this becomes parent node for the children)
+            b) check if a valid position exist (boundary will make few nodes invalid)
+            c) if any node is a wall then ignore that
+            d) add to valid children node list for the selected parent
+
+            For all the children node
+                a) if child in visited list then ignore it and try next node
+                b) calculate child node g, h and f values
+                c) if child in yet_to_visit list then ignore it
+                d) else move the child to yet_to_visit list
+    """
+    # find maze has got how many rows and columns
+    no_rows, no_columns = np.shape(maze)
 
-from dataclasses import dataclass
-import math
-from typing import List
-import sys
+    # Loop until you find the end
 
+    while len(yet_to_visit_list) > 0:
 
-ROW = 9
-COL = 10
-# same as c++
-FLT_MAX = 340282346638528859811704183484516925440.000000
+        # Every time any node is referred from yet_to_visit list, counter of limit operation incremented
+        outer_iterations += 1
 
+        # Get the current node
+        current_node = yet_to_visit_list[0]
+        current_index = 0
+        for index, item in enumerate(yet_to_visit_list):
+            if item.f < current_node.f:
+                current_node = item
+                current_index = index
 
-Vector = tuple()
+        # if we hit this point return the path such as it may be no solution or
+        # computation cost is too high
+        if outer_iterations > max_iterations:
+            print("giving up on pathfinding too many iterations")
+            return return_path(current_node, maze)
 
+        # Pop current node out off yet_to_visit list, add to visited list
+        yet_to_visit_list.pop(current_index)
+        visited_list.append(current_node)
 
-# Creating a shortcut for int, int pair type
-def Pair(x: int, y: int) -> Vector:
-    return (x, y)
+        # test if goal is reached or not, if yes then return the path
+        if current_node == end_node:
+            return return_path(current_node, maze)
 
+        # Generate children from all adjacent squares
+        children = []
 
-# Creating a shortcut for pair<int, pair<int, int>> type
-def pPair(x: float, y: int, z: int) -> Vector:
-    return Pair(x, Pair(y, z))
+        for new_position in move:
 
+            # Get node position
+            node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
 
-# A structure to hold the necessary parameters
-@dataclass
-class Cell:
-    # Row and Column index of its parent
-    # Note that 0 <= i <= ROW-1 & 0 <= j <= COL-1
-    # to use: Cell(1, 0, 1.543543, 1.754674564, 1.3443434343))
-    # return: Cell(parent_i=1, parent_j=0, f=1.543543, g=1.754674564, h=1.3443434343)
-    parent_i: int
-    parent_j: int
-    f: float
-    g: float
-    h: float
-    # f = g + h
+            # Make sure within range (check if within maze boundary)
+            if (node_position[0] > (no_rows - 1) or
+                    node_position[0] < 0 or
+                    node_position[1] > (no_columns - 1) or
+                    node_position[1] < 0):
+                continue
 
+            # Make sure walkable terrain
+            if maze[node_position[0]][node_position[1]] != 0:
+                continue
 
-# A Utility Function to check whether given Cell (row, col)
-# is a valid Cell or not.
-
+            # Create new node
+            new_node = Node(current_node, node_position)
 
-def is_valid(row: int, col: int) -> bool:
-    # Returns True if row number and column number
-    # is in range
-    return (row >= 0) and (row < ROW) and (col >= 0) and (col < COL)
-
-
-# A Utility Function to check whether the given Cell is
-# blocked or not
-def is_un_blocked(grid, row: int, col: int) -> bool:
-    # Returns True if the Cell is not blocked else False
-    if grid[row][col] == 1:
-        return True
-    else:
-        return False
-
-
-# A Utility Function to check whether destination Cell has
-# been reached or not
-def is_destination(row: int, col: int, dest: Pair) -> bool:
-    if row == dest[0] and col == dest[1]:
-        return True
-    else:
-        return False
-
-
-# A Utility Function to calculate the 'h' heuristics.
-def calculate_h_value(row: int, col: int, dest: Pair) -> float:
-    # Return using the distance formula
-    return (float(math.sqrt(
-        (row - dest[0]) * (row - dest[0])
-        + (col - dest[1]) * (col - dest[1]))))
-
-
-# A Utility Function to trace the path from the source
-# to destination
-def trace_path(cell_details: Cell, dest: Pair) -> None:
-    print("\nThe Path is ")
-    row = dest[0]
-    col = dest[1]
-
-    Path = []
-    temp_cell_details = dict(cell_details[row][col].__dict__)
-
-    while not (temp_cell_details['parent_i'] == rows and temp_cell_details['parent_j'] == col):
-        Path.append(Pair(row, col))
-        temp_row = temp_cell_details['parent_i']
-        temp_col = temp_cell_details['parent_j']
-        row = temp_row
-        col = temp_col
-
-    Path.append(Pair(row, col))
-    while not Path:
-        p = Path[-1]
-        Path.pop()
-        print("-> (%d,%d) ", p[0], p[1])
-
-    return False
-
-
-# A Function to find the shortest path between
-# a given source Cell to a destination Cell according
-# to A* Search Algorithm
-def a_star_search(grid, src: Pair, dest: Pair) -> None:
-    # If the source is out of range
-    if not is_valid(src[0], src[1]):
-        print("Source is invalid\n")
-        return True
-
-    # If the destination is out of range
-    if not is_valid(dest[0], dest[1]):
-        print("Destination is invalid\n")
-        return False
-
-    # Either the source or the destination is blocked
-    if not is_un_blocked(grid, src[0], src[1]) or not is_un_blocked(grid, dest[0], dest[1]):
-        print("Source or the destination is blocked\n")
-        return False
-
-    # If the destination Cell is the same as source Cell
-    if is_destination(src[0], src[1], dest):
-        print("We are already at the destination\n")
-        return False
-
-    # Create a closed list and initialise it to False which
-    # means that no Cell has been included yet This closed
-    # list is implemented as a boolean 2D array
-    closed_list = [[0 for r in range(ROW)] for c in range(COL)]
-    memset = (closed_list, False, len(closed_list))
-
-    # Declare a 2D array of structure to hold the details
-    # of that Cell
-    rows, cols = (ROW, COL)
-    cell_details = [[0]*cols]*rows
-
-    for r in range(ROW):
-        for c in range(COL):
-            parent_i = -1
-            parent_j = -1
-
-            f = FLT_MAX
-            g = FLT_MAX
-            h = FLT_MAX
-            cell_details[r][c] = Cell(parent_i, parent_j, f, g, h)
-
-    # Initialising the parameters of the starting node
-    i, j = src
-    parent_i = i
-    parent_j = j
-    f = 0.0
-    g = 0.0
-    h = 0.0
-    cell_details[i][j] = Cell(parent_i, parent_j, f, g, h)
-
-    '''
-    Create an open list having information as-
-    <f, <i, j>>
-    where f = g + h,
-    and i, j are the row and column index of that Cell
-    Note that 0 <= i <= ROW-1 & 0 <= j <= COL-1
-    This open list is implemented as a set of pair of
-    pair.
-    '''
-    open_list = list()
-
-    # Put the starting Cell on the open list and set its
-    # 'f' as 0
-    open_list.append((0.0, (i, j)))
-
-    # We set this boolean value as False as initially
-    # the destination is not reached.
-    found_dest = False
-
-    while len(open_list) > 0:
-        p = open_list[0]
-
-        # Remove this vertex from the open list
-        del open_list[0]
-
-        # Add this vertex to the closed list
-        i = p[1][0]
-        j = p[1][1]
-
-        closed_list[i][j] = True
-
-        '''
-        Generating all the 8 successor of this Cell
-
-            N.W N N.E
-            \ | /
-                \ | /
-            W----Cell----E
-                / | \
-                / | \
-            S.W S S.E
-
-        Cell-->Popped Cell (i, j)
-        N --> North  (i-1, j)
-        S --> South  (i+1, j)
-        E --> East   (i, j+1)
-        W --> West       (i, j-1)
-        N.E--> North-East (i-1, j+1)
-        N.W--> North-West (i-1, j-1)
-        S.E--> South-East (i+1, j+1)
-        S.W--> South-West (i+1, j-1)
-        '''
-
-        # To store the 'g', 'h' and 'f' of the 8 successors
-        g_new = 0
-        h_new = 0
-        f_new = 0
-
-        # ----------- 1st Successor (North) ------------
-
-        # Only process this Cell if this is a valid one
-        if is_valid(i - 1, j):
-            # If the destination Cell is the same as the
-            # current successor
-            if is_destination(i - 1, j, dest):
-                # Set the Parent of the destination Cell
-                cell_details[i - 1][j]['parent_i'] = i
-                cell_details[i - 1][j]['parent_j'] = j
-                print("The destination cell is found\n")
-                trace_path(cell_details[i][j], dest)
-                found_dest = True
-                return found_dest
-
-            # If the successor is already on the closed
-            # list or if it is blocked, then ignore it.
-            # Else do the following
-            elif not closed_list[i - 1][j] and is_un_blocked(grid, i - 1, j):
-                temp_cell_details = dict(cell_details[i][j].__dict__)
-                g_new = temp_cell_details['g'] + 1.0
-                h_new = calculate_h_value(i - 1, j, dest)
-                f_new = g_new + h_new
-
-                # If it isn’t on the open list, add it to
-                # the open list. Make the current square
-                # the parent of this square. Record the
-                # f, g, and h costs of the square cell
-                #            OR
-                # If it is on the open list already, check
-                # to see if this path to that square is
-                # better, using 'f' cost as the measure.
-                temp_cell_details = dict(cell_details[i - 1][j].__dict__)
-                if temp_cell_details['f'] == FLT_MAX or temp_cell_details['f'] > f_new:
-                    open_list.append(Pair(
-                        f_new, Pair(i - 1, j)))
-
-                    # Update the details of this cell
-                    temp_cell_details['f'] = f_new
-                    temp_cell_details['g'] = g_new
-                    temp_cell_details['h'] = h_new
-                    temp_cell_details['parent_i'] = i
-                    temp_cell_details['parent_j'] = j
-
-        # ----------- 2nd Successor (South) ------------
-
-        # Only process this cell if this is a valid one
-        if is_valid(i + 1, j):
-            # If the destination cell is the same as the
-            # current successor
-            if is_destination(i + 1, j, dest):
-                temp_cell_details = cell_details[i + 1][j]
-                # Set the Parent of the destination cell
-                temp_cell_details['parent_i'] = i
-                temp_cell_details['parent_j'] = j
-                print("The destination cell is found\n")
-                trace_path(cell_details, dest)
-                found_dest = True
-                return False
-
-            # If the successor is already on the closed
-            # list or if it is blocked, then ignore it.
-            # Else do the following
-            elif not closed_list[i + 1][j] and is_un_blocked(grid, i + 1, j):
-                temp_cell_details = dict(cell_details[i][j].__dict__)
-                g_new = temp_cell_details['g'] + 1.0
-                h_new = calculate_h_value(i + 1, j, dest)
-                f_new = g_new + h_new
-
-                # If it isn’t on the open list, add it to
-                # the open list. Make the current square
-                # the parent of this square. Record the
-                # f, g, and h costs of the square cell
-                #            OR
-                # If it is on the open list already, check
-                # to see if this path to that square is
-                # better, using 'f' cost as the measure.
-                if (temp_cell_details['f'] == FLT_MAX or cell_details[i + 1][j].f > f_new):
-                    open_list.insert(Pair(
-                        f_new, Pair(i + 1, j)))
-                    # Update the details of this cell
-                    temp_cell_details['f'] = f_new
-                    temp_cell_details['g'] = g_new
-                    temp_cell_details['h'] = h_new
-                    temp_cell_details['parent_i'] = i
-                    temp_cell_details['parent_j'] = j
-
-        # ----------- 3rd Successor (East) ------------
-
-        # Only process this cell if this is a valid one
-        if is_valid(i, j + 1):
-            temp_cell_details = dict(cell_details[i][j + 1].__dict__)
-            # If the destination cell is the same as the
-            # current successor
-            if is_destination(i, j + 1, dest):
-                # Set the Parent of the destination cell
-                temp_cell_details['parent_i'] = i
-                temp_cell_details['parent_j'] = j
-                print("The destination cell is found\n")
-                trace_path(cell_details, dest)
-                found_dest = True
-                return False
-
-            # If the successor is already on the closed
-            # list or if it is blocked, then ignore it.
-            # Else do the following
-            elif len(closed_list[i]) >= (j+1) and is_un_blocked(grid, i, j + 1):
-                temp_cell_details = dict(cell_details[i - 1][j].__dict__)
-                g_new = temp_cell_details['g'] + 1.0
-                h_new = calculate_h_value(i, j + 1, dest)
-                f_new = g_new + h_new
-
-                # If it isn’t on the open list, add it to
-                # the open list. Make the current square
-                # the parent of this square. Record the
-                # f, g, and h costs of the square cell
-                #            OR
-                # If it is on the open list already, check
-                # to see if this path to that square is
-                # better, using 'f' cost as the measure.
-                temp_cell_details = dict(cell_details[i][j + 1].__dict__)
-                if (temp_cell_details['f'] == FLT_MAX
-                        or temp_cell_details['f'] > f_new):
-                    open_list.append(Pair(f_new, Pair(i, j + 1)))
-
-                    # Update the details of this cell
-                    temp_cell_details['f'] = f_new
-                    temp_cell_details['g'] = g_new
-                    temp_cell_details['h'] = h_new
-                    temp_cell_details['parent_i'] = i
-                    temp_cell_details['parent_j'] = j
-
-        # ----------- 4th Successor (West) ------------
-
-        # Only process this cell if this is a valid one
-        if is_valid(i, j - 1):
-            # If the destination cell is the same as the
-            # current successor
-            if is_destination(i, j - 1, dest):
-                temp_cell_details = dict(cell_details[i][j - 1].__dict__)
-                # Set the Parent of the destination cell
-                temp_cell_details['parent_i'] = i
-                temp_cell_details['parent_j'] = j
-                print("The destination cell is found\n")
-                trace_path(cell_details, dest)
-                found_dest = True
-                return False
-
-            # If the successor is already on the closed
-            # list or if it is blocked, then ignore it.
-            # Else do the following
-            elif not closed_list[i][j - 1] and is_un_blocked(grid, i, j - 1):
-                temp_cell_details = dict(cell_details[i][j].__dict__)
-                g_new = temp_cell_details['g'] + 1.0
-                h_new = calculate_h_value(i, j - 1, dest)
-                f_new = g_new + h_new
-
-                # If it isn’t on the open list, add it to
-                # the open list. Make the current square
-                # the parent of this square. Record the
-                # f, g, and h costs of the square cell
-                #            OR
-                # If it is on the open list already, check
-                # to see if this path to that square is
-                # better, using 'f' cost as the measure.
-                if (temp_cell_details['f'] == FLT_MAX
-                        or temp_cell_details['f'] > f_new):
-                    open_list.append(Pair(
-                        f_new, Pair(i, j - 1)))
-
-                    # Update the details of this cell
-                    temp_cell_details['f'] = f_new
-                    temp_cell_details['g'] = g_new
-                    temp_cell_details['h'] = h_new
-                    temp_cell_details['parent_i'] = i
-                    temp_cell_details['parent_j'] = j
-
-        # ----------- 5th Successor (North-East)
-        # ------------
-
-        # Only process this cell if this is a valid one
-        if is_valid(i - 1, j + 1):
-            # If the destination cell is the same as the
-            # current successor
-            if is_destination(i - 1, j + 1, dest):
-                temp_cell_details = dict(cell_details[i - 1][j + 1])
-                # Set the Parent of the destination cell
-                temp_cell_details['parent_i'] = i
-                temp_cell_details['parent_j'] = j
-                print("The destination cell is found\n")
-                trace_path(cell_details, dest)
-                found_dest = True
-                return False
-
-            # If the successor is already on the closed
-            # list or if it is blocked, then ignore it.
-            # Else do the following
-            elif len(closed_list[i - 1]) >= (j + 1) and is_un_blocked(grid, i - 1, j + 1):
-                temp_cell_details = dict(cell_details[i][j].__dict__)
-                g_new = temp_cell_details['g'] + 1.414
-                h_new = calculate_h_value(i - 1, j + 1, dest)
-                f_new = g_new + h_new
-
-                # If it isn’t on the open list, add it to
-                # the open list. Make the current square
-                # the parent of this square. Record the
-                # f, g, and h costs of the square cell
-                #            OR
-                # If it is on the open list already, check
-                # to see if this path to that square is
-                # better, using 'f' cost as the measure.
-                temp_cell_details = dict(cell_details[i - 1][j + 1].__dict__)
-                if temp_cell_details['f'] == FLT_MAX or temp_cell_details['f'] > f_new:
-                    open_list.append(Pair(
-                        f_new, Pair(i - 1, j + 1)))
-
-                    # Update the details of this cell
-                    temp_cell_details['f'] = f_new
-                    temp_cell_details['g'] = g_new
-                    temp_cell_details['h'] = h_new
-                    temp_cell_details['parent_i'] = i
-                    temp_cell_details['parent_j'] = j
-
-        # ----------- 6th Successor (North-West)
-        # ------------
-
-        # Only process this cell if this is a valid one
-        if is_valid(i - 1, j - 1):
-            # If the destination cell is the same as the
-            # current successor
-            temp_cell_details = dict(cell_details[i - 1][j - 1].__dict__)
-            if is_destination(i - 1, j - 1, dest):
-                # Set the Parent of the destination cell
-                temp_cell_details['parent_i'] = i
-                temp_cell_details['parent_j'] = j
-                print("The destination cell is found\n")
-                trace_path(cell_details, dest)
-                found_dest = True
-                return False
-
-            # If the successor is already on the closed
-            # list or if it is blocked, then ignore it.
-            # Else do the following
-            elif not (closed_list[i - 1][j - 1]) and is_un_blocked(grid, i - 1, j - 1):
-                g_new = temp_cell_details['g'] + 1.414
-                h_new = calculate_h_value(i - 1, j - 1, dest)
-                f_new = g_new + h_new
-
-                # If it isn’t on the open list, add it to
-                # the open list. Make the current square
-                # the parent of this square. Record the
-                # f, g, and h costs of the square cell
-                #            OR
-                # If it is on the open list already, check
-                # to see if this path to that square is
-                # better, using 'f' cost as the measure.
-                if (temp_cell_details['f'] == FLT_MAX
-                        or temp_cell_details['f'] > f_new):
-                    open_list.append((
-                        f_new, (i - 1, j - 1)))
-                    # Update the details of this cell
-                    temp_cell_details['f'] = f_new
-                    temp_cell_details['g'] = g_new
-                    temp_cell_details['h'] = h_new
-                    temp_cell_details['parent_i'] = i
-                    temp_cell_details['parent_j'] = j
-
-        # ----------- 7th Successor (South-East)
-        # ------------
-
-        # Only process this cell if this is a valid one
-        if is_valid(i + 1, j + 1):
-            # If the destination cell is the same as the
-            # current successor
-            temp_cell_details = dict(cell_details[i + 1][j + 1].__dict__)
-            if is_destination(i + 1, j + 1, dest):
-                # Set the Parent of the destination cell
-                temp_cell_details['parent_i'] = i
-                temp_cell_details['parent_j'] = j
-                print("The destination cell is found\n")
-                trace_path(cell_details, dest)
-                found_dest = True
-                return False
-
-            # If the successor is already on the closed
-            # list or if it is blocked, then ignore it.
-            # Else do the following
-            elif len(closed_list[i + 1]) >= (j + 1) and is_un_blocked(grid, i + 1, j + 1):
-                temp_cell_details = dict(cell_details[i][j].__dict__)
-                g_new = temp_cell_details['g'] + 1.414
-                h_new = calculate_h_value(i + 1, j + 1, dest)
-                f_new = g_new + h_new
-
-                # If it isn’t on the open list, add it to
-                # the open list. Make the current square
-                # the parent of this square. Record the
-                # f, g, and h costs of the square cell
-                #            OR
-                # If it is on the open list already, check
-                # to see if this path to that square is
-                # better, using 'f' cost as the measure.
-                temp_cell_details = dict(cell_details[i + 1][j + 1].__dict__)
-                if temp_cell_details['f'] == FLT_MAX or temp_cell_details['f'] > f_new:
-                    open_list.append(Pair(
-                        f_new, Pair(i + 1, j + 1)))
-
-                    # Update the details of this cell
-                    temp_cell_details['f'] = f_new
-                    temp_cell_details['g'] = g_new
-                    temp_cell_details['h'] = h_new
-                    temp_cell_details['parent_i'] = i
-                    temp_cell_details['parent_j'] = j
-
-        # ----------- 8th Successor (South-West)
-        # ------------
-
-        # Only process this cell if this is a valid one
-        if is_valid(i + 1, j - 1):
-            # If the destination cell is the same as the
-            # current successor
-            if is_destination(i + 1, j - 1, dest):
-                temp_cell_details = dict(cell_details[i + 1][j - 1].__dict__)
-                # Set the Parent of the destination cell
-                temp_cell_details['parent_i'] = i
-                temp_cell_details['parent_j'] = j
-                print("The destination cell is found\n")
-                trace_path(cell_details, dest)
-                found_dest = True
-                return False
-
-            # If the successor is already on the closed
-            # list or if it is blocked, then ignore it.
-            # Else do the following
-            elif not closed_list[i + 1][j - 1] and is_un_blocked(grid, i + 1, j - 1):
-                temp_cell_details = dict(cell_details[i + 1][j - 1].__dict__)
-                g_new = temp_cell_details['g'] + 1.414
-                h_new = calculate_h_value(i + 1, j - 1, dest)
-                f_new = g_new + h_new
-
-                # If it isn’t on the open list, add it to
-                # the open list. Make the current square
-                # the parent of this square. Record the
-                # f, g, and h costs of the square cell
-                #            OR
-                # If it is on the open list already, check
-                # to see if this path to that square is
-                # better, using 'f' cost as the measure.
-                if temp_cell_details['f'] == FLT_MAX or temp_cell_details['f'] > f_new:
-                    open_list.append((
-                        f_new, (i + 1, j - 1)))
-
-                    # Update the details of this cell
-                    temp_cell_details['f'] = f_new
-                    temp_cell_details['g'] = g_new
-                    temp_cell_details['h'] = h_new
-                    temp_cell_details['parent_i'] = i
-                    temp_cell_details['parent_j'] = j
-
-    # When the destination cell is not found and the open
-    # list is empty, then we conclude that we failed to
-    # reach the destination cell. This may happen when the
-    # there is no way to destination cell (due to
-    # blockages)
-    if not found_dest:
-        print("Failed to find the Destination Cell\n")
-
-    return False
-
-
-# Driver program to test above function
-if __name__ == "__main__":
-
-    '''
-    Description of the Grid-
-    1--> The cell is not blocked
-    0--> The cell is blocked
-    '''
-    grid = [[1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-            [1, 1, 1, 0, 1, 1, 1, 0, 1, 1],
-            [1, 1, 1, 0, 1, 1, 0, 1, 0, 1],
-            [0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
-            [1, 1, 1, 0, 1, 1, 1, 0, 1, 0],
-            [1, 0, 1, 1, 1, 1, 0, 1, 0, 0],
-            [1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-            [1, 0, 1, 1, 1, 1, 0, 1, 1, 1],
-            [1, 1, 1, 0, 0, 0, 1, 0, 0, 1]]
-    for i in grid:
-        temp = ''
-        for j in i:
-            temp += str(j) + ', '
-        print(temp[:-2])
-    print('-'*50)
-
-    # Source is the left-most bottom-most corner
-    src = Pair(8, 0)
-    print(f"src: {src}")
-    # Destination is the left-most top-most corner
-    dest = Pair(0, 0)
-    print(f"dest: {dest}")
-    a_star_search(grid, src, dest)
+            # Append
+            children.append(new_node)
+
+        # Loop through children
+        for child in children:
+
+            # Child is on the visited list (search entire visited list)
+            if len([visited_child for visited_child in visited_list if visited_child == child]) > 0:
+                continue
+
+            # Create the f, g, and h values
+            child.g = current_node.g + cost
+            # Heuristic costs calculated here, this is using eucledian distance
+            child.h = (((child.position[0] - end_node.position[0]) ** 2) +
+                       ((child.position[1] - end_node.position[1]) ** 2))
+
+            child.f = child.g + child.h
+
+            # Child is already in the yet_to_visit list and g cost is already lower
+            if len([i for i in yet_to_visit_list if child == i and child.g > i.g]) > 0:
+                continue
+
+            # Add the child to the yet_to_visit list
+            yet_to_visit_list.append(child)
+
+
+if __name__ == '__main__':
+    maze = [[0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 1, 0, 0],
+            [0, 1, 0, 0, 1, 0],
+            [0, 0, 0, 0, 1, 0]]
+
+    start = [0, 0]  # starting position
+    end = [4, 5]  # ending position
+    cost = 1  # cost per movement
+
+    path = search(maze, cost, start, end)
+    print(path)
+    print('\n'.join([''.join(["{:" ">3d}".format(item) for item in row])
+                     for row in path]))
