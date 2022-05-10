@@ -20,9 +20,11 @@ class LinkedList:
     # starting from head 
     def printList(self): 
         temp = self.head 
+        lst = []
         while (temp): 
-            print (temp.data) 
+            lst.append(temp.data) 
             temp = temp.next
+        print([l for l in lst])
 
     # This function is in LinkedList class 
     # Function to insert a new node at the beginning 
@@ -162,6 +164,7 @@ if __name__=='__main__':
     # Start with the empty list 
     llist = LinkedList() 
 
+    print("adding 1 -> 2 -> 3")
     llist.head = Node(1) 
     second = Node(2) 
     third = Node(3) 
