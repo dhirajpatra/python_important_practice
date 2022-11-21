@@ -82,8 +82,6 @@ houses = ["Eric's house", "Kenny's house",
           "Kyle's house", "Stan's house", "Dhiraj's house"]
 
 # Each function call represents an elf doing his work
-
-
 def deliver_presents_recursively(houses):
     # Worker elf doing his work
     if len(houses) == 1:
@@ -111,24 +109,6 @@ def find_pairs(l, x):
         for (j, el2) in enumerate(l[(i+1):]):
             if el1 + el2 == x:
                 pairs.append((el1, el2))
-    return pairs
-
-
-print(l1)
-tic = time.perf_counter()
-print(find_pairs(l1, 50))
-toc = time.perf_counter()
-print(toc - tic)
-
-
-# Find pairs of integers in list so that their sum is equal to integer x
-def find_pairs(l, x):
-    pairs = []
-    len_l = len(l)
-    for i in range(0, len_l):
-        for j in range((i+1), len_l):
-            if l[i] + l[j] == x:
-                pairs.append((l[i], l[j]))
     return pairs
 
 
@@ -336,10 +316,7 @@ print('fox' in s)
 
 [(lambda x: x * 2)(x) for x in l1]
 
-[markdown]
 # ## Iterators, Generators and Decorators
-
-
 class Counter(object):
     def __init__(self, low, high):
         self.current = low
@@ -436,12 +413,12 @@ def find_first_unique(lst):
     answer_key = None
     # filter non-repeating with least order
     for ele in lst:
-        if (counts[ele][0] is 1) and (answer is None):
+        if (counts[ele][0] == 1) and (answer is None):
             answer = counts[ele]
             answer_key = ele
         elif answer is None:
             continue
-        elif (counts[ele][0] is 1) and (counts[ele][1] < answer[1]):
+        elif (counts[ele][0] == 1) and (counts[ele][1] < answer[1]):
             answer = counts[ele]
             answer_key = ele
     return answer_key
@@ -511,13 +488,157 @@ word_list = ' '.join(word_list)
 # names in your directory
 import os
 
-os.chdir('/Users/macbook/Desktop/test')
+os.chdir('./')
 print(os.getcwd())
 
 for count, f in enumerate(os.listdir()):
     f_name, f_ext = os.path.splitext(f)
     f_name = "geek" + str(count)
+    print(f_name)
+    # new_name = f'{f_name}{f_ext}'
+    # os.rename(f, new_name)
 
-    new_name = f'{f_name}{f_ext}'
-    os.rename(f, new_name)
+def reversing(n):
+    reverse = 0
+    while n != 0:
+        reverse = reverse * 10 + n % 10
+        n = n // 10
+    return reverse
+
+n = 465
+print(reversing(n))
+
+ 
+# A function to print all prime factors of
+# a given number n
+def primeFactors(n):
+    import math
+
+    # Print the number of two's that divide n
+    while n % 2 == 0:
+        print(n)
+        n = n / 2
+         
+    # n must be odd at this point
+    # so a skip of 2 ( i = i + 2) can be used
+    for i in range(3,int(math.sqrt(n))+1,2):
+         
+        # while i divides n , print i and divide n
+        while n % i== 0:
+            print(i)
+            n = n / i
+             
+    # Condition if n is a prime
+    # number greater than 2
+    if n > 2:
+        print(n)
+         
+# Driver Program to test above function
+n = 315
+primeFactors(n)
+
+
+"""
+Write a function to swap a number in place (that is, without temporary variables) .
+"""
+def swap_numbers(pair_ab):
+    if not len(pair_ab) == 2:
+        return
+    # assume a = 9; b = 5
+    pair_ab[0] = pair_ab[1] - pair_ab[0]  # a = -4; b = 5
+    pair_ab[1] = pair_ab[1] - pair_ab[0]  # a = -4; b = 9
+    pair_ab[0] = pair_ab[1] + pair_ab[0]  # a = 5; b = 9
+
+a = 9
+b = 5
+pair = [a, b]
+swap_numbers(pair)
+
+"""
+
+"""
+def plusOne(A):
+    num_string = ''.join(str(i) for i in A)
+    num = int(num_string)
+    num = num + 1
+    num = str(num)
+    final_arr = list(num)
+    return (final_arr)
+
+l = [25, 30, 40, 50]
+plusOne(l)
+# ['2', '5', '3', '0', '4', '0', '5', '1']
+
+#Traversing from one point to another point
+#storing the minimum number of steps
+def traversal_steps(A,B):
+    points = list(zip(A,B))
+    minSteps = 0
+    for p in range(len(points)-1):
+        #taking the manhattan distance between x and y-coordinates 
+        d1 = abs(points[p][0] - points[p+1][0])
+        d2 = abs(points[p][1] - points[p+1][1])
+        #adding the maximum among the two to the running steps parameter
+        minSteps += max(d1,d2)
+    return (minSteps)
+
+A = [2, 5, 7, 9]
+B = [6, 5, 4, 3]
+print (traversal_steps(A,B))
+
+"""
+find the consecutive number starting and ending position
+of a sorted array with binary search
+input: 
+arr = [2,4,5,5,5,5,5,7.9,9]
+target = 5
+output: [2,6]
+T(n) = O(log n)
+S(n) = O(1)
+"""
+def find_start(arr, target):
+    if arr[0] == target:
+        return 0
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        # if mid == start of the sequences
+        # means left side of mid < target
+        if arr[mid] == target and arr[mid - 1] < target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+def find_end(arr, target):
+    if arr[-1] == target:
+        return len(arr) - 1
+    left, right = 0, len(arr) - 1
+    while left <= right:
+        mid = (left + right) // 2
+        # means mid is target
+        # then right side is greated that target value 
+        if arr[mid] == target and arr[mid + 1] > target:
+            return mid
+        elif arr[mid] > target:
+            right = mid - 1
+        else:
+            left =  mid + 1
+    return -1
+
+def first_and_last(arr: list, target: int) -> list: 
+    if len(arr) == 0 
+        or arr[0] > target
+        or arr[-1] < target:
+        return [-1, -1]
+    start = find_start(arr, target)
+    end = find_end(arr, target)
+    return [start, end]
+
+arr = [2,4,5,5,5,5,5,7.9,9]
+target = 5
+print(first_and_last(arr, target))
+
 

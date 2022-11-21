@@ -8,6 +8,13 @@ word_lengths = [{word: len(word)} for word in words if word != "the"]
 print(words)
 print(word_lengths)
 
+from collections import Counter
+
+word_count = Counter(words)
+word_count
+{**word_count}
+# {'the': 2, 'quick': 1, 'brown': 1, 'fox': 1, 'jumps': 1, 'over': 1, 'lazy': 1, 'dog': 1}
+
 # create 2 r 3 col filled with 0
 num_rows = 2
 num_cols = 3
@@ -49,3 +56,6 @@ my_list = [[10,20,30],[40,50,60],[70,80,90]]
 flattened = [x for temp in my_list for x in temp]
 print(flattened)
 # output => [10, 20, 30, 40, 50, 60, 70, 80, 90]
+
+# first 10 prime numbers
+[n for n in range(1,25) if all(n%x!=0 for x in [2,3,5,7] if n not in [2,3,5,7])]

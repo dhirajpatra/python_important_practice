@@ -39,3 +39,35 @@ def sum(a, b):
     1
     """
     return a + b
+
+from functools import wraps
+
+def makebold(fn):
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+        return "<b>" + fn(*args, **kwargs) + "</b>"
+    return wrapped
+
+def makeitalic(fn):
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+        return "<i>" + fn(*args, **kwargs) + "</i>"
+    return wrapped
+
+@makebold
+@makeitalic
+def hello():
+    return "hello world"
+
+@makebold
+@makeitalic
+def log(s):
+    return s
+
+print hello()        # returns "<b><i>hello world</i></b>"
+print hello.__name__ # with functools.wraps() this returns "hello"
+print log('hello')   # returns "<b><i>hello</i></b>"
+
+# get every third element of a list
+[x for i, x in enumerate(thelist) if i%3 == 0]
+
