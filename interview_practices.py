@@ -51,7 +51,9 @@ l2 = [70, 80, 40, 90, 50, 100]
 print(intersect(l1, l2))
 
 
-def is_anagram(s1, s2):
+def is_anagram(s1: str, s2: str) -> bool:
+    if len(s1) != len(s2):
+            return False
     return set(s1) == set(s2)
 
 
@@ -612,7 +614,7 @@ def find_start(arr, target):
             right = mid - 1
     return -1
 
-def find_end(arr, target):
+def find_end(arr: list, target: int) -> int:
     if arr[-1] == target:
         return len(arr) - 1
     left, right = 0, len(arr) - 1
@@ -641,4 +643,111 @@ arr = [2,4,5,5,5,5,5,7.9,9]
 target = 5
 print(first_and_last(arr, target))
 
+def longestConsecutive(nums: List[int]) -> int:
+    numSet = set(nums)
+    longest = 0
 
+    for n in nums:
+        # check if its the start of a sequence
+        if (n - 1) not in numSet:
+            length = 1
+            while (n + length) in numSet:
+                length += 1
+            longest = max(length, longest)
+    return longest
+
+"""
+Top k frequent elements in a list of string
+O(n)
+"""
+def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+    count = {}
+    freq = [[] for i in range(len(nums) + 1)]
+
+    for n in nums:
+        count[n] = 1 + count.get(n, 0)
+    for n, c in count.items():
+        freq[c].append(n)
+
+    res = []
+    for i in range(len(freq) - 1, 0, -1):
+        for n in freq[i]:
+            res.append(n)
+            if len(res) == k:
+                return res
+
+"""
+Trapping rain water
+"""
+def trap(self, height: List[int]) -> int:
+    if not height:
+        return 0
+
+    l, r = 0, len(height) - 1
+    leftMax, rightMax = height[l], height[r]
+    res = 0
+    while l < r:
+        if leftMax < rightMax:
+            l += 1
+            leftMax = max(leftMax, height[l])
+            res += leftMax - height[l]
+        else:
+            r -= 1
+            rightMax = max(rightMax, height[r])
+            res += rightMax - height[r]
+    return res
+
+
+def multi_word_search(doc_list, keywords):
+    """
+    Takes list of documents (each document is a string) and a list of keywords.  
+    Returns a dictionary where each key is a keyword, and the value is a list of indices
+    (from doc_list) of the documents containing that keyword
+
+    >>> doc_list = ["The Learn Python Challenge Casino.", "They bought a car and a casino", "Casinoville"]
+    >>> keywords = ['casino', 'they']
+    >>> multi_word_search(doc_list, keywords)
+    {'casino': [0, 1], 'they': [1]}
+    """
+    import re
+    if len(keywords) == 0:
+        return {}
+    words = []
+    result_list = {}
+    keywords = [key.lower() for key in keywords]
+    print(keywords)
+    for key in keywords:
+        if key not in result_list.keys():
+            result_list[key] = []
+    i = 0
+
+    for d in doc_list:
+        words = d.split(' ')
+        words = [re.sub("[ ;:,.]", "", word) for word in words]
+        for word in words:
+            if word.lower() in keywords:
+                result_list[word.lower()].append(i)
+        i += 1
+    return result_list
+
+
+def is_valid_zip(zip_code):
+    """Returns whether the input string is a valid (5 digit) zip code
+    """
+    try:
+        if zip_code == '00000':
+            zip_code = 11111
+        else:
+            zip_code = int(zip_code)
+        c = 0
+        while zip_code != 0:
+            zip_code //= 10
+            c += 1
+        if c == 5:
+            return True
+        
+    except ValueError:
+        print(f'invalid literal for int() with base 10: {zip_code}')
+    except TypeError:
+        print(f'invalid literal for int() with base 10: {zip_code}')
+    return False
