@@ -71,3 +71,29 @@ print log('hello')   # returns "<b><i>hello</i></b>"
 # get every third element of a list
 [x for i, x in enumerate(thelist) if i%3 == 0]
 
+# calculate sum for even position elements using enumerate()
+def sum_even_position(lst):
+    total = 0
+    for i, element in enumerate(lst):
+        if i % 2 == 0:
+            total += element
+    return total
+
+# calculate sum for even position elements using range()
+def sum_even_position(lst):
+    total = 0
+    for i in range(0, len(lst), 2):
+        total += lst[i]
+    return total
+
+my_list = [1, 2, 3, 4, 5]
+result = sum_even_position(my_list)
+print(result)  # 6
+
+
+my_list = [1, 2, 3, 4, 5]
+result = sum_even_position(my_list)
+print(result)  # 6
+
+
+

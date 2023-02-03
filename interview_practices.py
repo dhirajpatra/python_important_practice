@@ -1,4 +1,5 @@
 
+import os
 import time
 
 l1 = []
@@ -53,7 +54,7 @@ print(intersect(l1, l2))
 
 def is_anagram(s1: str, s2: str) -> bool:
     if len(s1) != len(s2):
-            return False
+        return False
     return set(s1) == set(s2)
 
 
@@ -84,6 +85,8 @@ houses = ["Eric's house", "Kenny's house",
           "Kyle's house", "Stan's house", "Dhiraj's house"]
 
 # Each function call represents an elf doing his work
+
+
 def deliver_presents_recursively(houses):
     # Worker elf doing his work
     if len(houses) == 1:
@@ -134,7 +137,7 @@ def cal_fibinacci(n):
 print(cal_fibinacci(10))
 
 # one line fibonacci
-lambda x:x if x <= 1 else fib(x-1) + fib(x+1)
+lambda x: x if x <= 1 else fib(x-1) + fib(x+1)
 
 
 def is_palindrome(phrase):
@@ -319,6 +322,8 @@ print('fox' in s)
 [(lambda x: x * 2)(x) for x in l1]
 
 # ## Iterators, Generators and Decorators
+
+
 class Counter(object):
     def __init__(self, low, high):
         self.current = low
@@ -430,26 +435,28 @@ print(find_first_unique([1, 1, 1, 2]))
 
 
 def f(*args, **kwargs):
-  print(args)
-  print(kwargs)
+    print(args)
+    print(kwargs)
+
 
 f(1, 2, 3)
 #(1, 2, 3)
-#{}
+# {}
 
 
-# list 
+# list
 doubles = [2 * n for n in range(50)]
 # generator / iterator
 doubles = (2 * n for n in range(50))
 
 
 def print_name_with_prefix(prefix):
-        print(f"Searching prefix:{prefix}")
-        while True:
-            name = (yield)
-            if prefix in name:
-                print(name)
+    print(f"Searching prefix:{prefix}")
+    while True:
+        name = (yield)
+        if prefix in name:
+            print(name)
+
 
 # generator
 x = print_name_with_prefix("hello")
@@ -457,7 +464,7 @@ x = print_name_with_prefix("hello")
 
 # ciser encryption of a text and shift key
 def encrypt(text, key):
-  
+
     encrypted_text = ''
 
     # Fill in the blanks to create an encrypted text
@@ -466,6 +473,7 @@ def encrypt(text, key):
         encrypted_text = encrypted_text + alphabet[idx]
 
     return encrypted_text
+
 
 # Check the encryption function with the shift equals to 10
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
@@ -488,7 +496,6 @@ word_list = ' '.join(word_list)
 # change all files name in a directory
 # Python program to rename all file
 # names in your directory
-import os
 
 os.chdir('./')
 print(os.getcwd())
@@ -500,6 +507,7 @@ for count, f in enumerate(os.listdir()):
     # new_name = f'{f_name}{f_ext}'
     # os.rename(f, new_name)
 
+
 def reversing(n):
     reverse = 0
     while n != 0:
@@ -507,10 +515,11 @@ def reversing(n):
         n = n // 10
     return reverse
 
+
 n = 465
 print(reversing(n))
 
- 
+
 # A function to print all prime factors of
 # a given number n
 def primeFactors(n):
@@ -520,21 +529,22 @@ def primeFactors(n):
     while n % 2 == 0:
         print(n)
         n = n / 2
-         
+
     # n must be odd at this point
     # so a skip of 2 ( i = i + 2) can be used
-    for i in range(3,int(math.sqrt(n))+1,2):
-         
+    for i in range(3, int(math.sqrt(n))+1, 2):
+
         # while i divides n , print i and divide n
-        while n % i== 0:
+        while n % i == 0:
             print(i)
             n = n / i
-             
+
     # Condition if n is a prime
     # number greater than 2
     if n > 2:
         print(n)
-         
+
+
 # Driver Program to test above function
 n = 315
 primeFactors(n)
@@ -543,6 +553,8 @@ primeFactors(n)
 """
 Write a function to swap a number in place (that is, without temporary variables) .
 """
+
+
 def swap_numbers(pair_ab):
     if not len(pair_ab) == 2:
         return
@@ -550,6 +562,7 @@ def swap_numbers(pair_ab):
     pair_ab[0] = pair_ab[1] - pair_ab[0]  # a = -4; b = 5
     pair_ab[1] = pair_ab[1] - pair_ab[0]  # a = -4; b = 9
     pair_ab[0] = pair_ab[1] + pair_ab[0]  # a = 5; b = 9
+
 
 a = 9
 b = 5
@@ -559,6 +572,8 @@ swap_numbers(pair)
 """
 
 """
+
+
 def plusOne(A):
     num_string = ''.join(str(i) for i in A)
     num = int(num_string)
@@ -567,26 +582,30 @@ def plusOne(A):
     final_arr = list(num)
     return (final_arr)
 
+
 l = [25, 30, 40, 50]
 plusOne(l)
 # ['2', '5', '3', '0', '4', '0', '5', '1']
 
-#Traversing from one point to another point
-#storing the minimum number of steps
-def traversal_steps(A,B):
-    points = list(zip(A,B))
+# Traversing from one point to another point
+# storing the minimum number of steps
+
+
+def traversal_steps(A, B):
+    points = list(zip(A, B))
     minSteps = 0
     for p in range(len(points)-1):
-        #taking the manhattan distance between x and y-coordinates 
+        # taking the manhattan distance between x and y-coordinates
         d1 = abs(points[p][0] - points[p+1][0])
         d2 = abs(points[p][1] - points[p+1][1])
-        #adding the maximum among the two to the running steps parameter
-        minSteps += max(d1,d2)
+        # adding the maximum among the two to the running steps parameter
+        minSteps += max(d1, d2)
     return (minSteps)
+
 
 A = [2, 5, 7, 9]
 B = [6, 5, 4, 3]
-print (traversal_steps(A,B))
+print(traversal_steps(A, B))
 
 """
 find the consecutive number starting and ending position
@@ -598,6 +617,8 @@ output: [2,6]
 T(n) = O(log n)
 S(n) = O(1)
 """
+
+
 def find_start(arr, target):
     if arr[0] == target:
         return 0
@@ -614,6 +635,7 @@ def find_start(arr, target):
             right = mid - 1
     return -1
 
+
 def find_end(arr: list, target: int) -> int:
     if arr[-1] == target:
         return len(arr) - 1
@@ -621,27 +643,30 @@ def find_end(arr: list, target: int) -> int:
     while left <= right:
         mid = (left + right) // 2
         # means mid is target
-        # then right side is greated that target value 
+        # then right side is greated that target value
         if arr[mid] == target and arr[mid + 1] > target:
             return mid
         elif arr[mid] > target:
             right = mid - 1
         else:
-            left =  mid + 1
+            left = mid + 1
     return -1
 
-def first_and_last(arr: list, target: int) -> list: 
-    if len(arr) == 0 
-        or arr[0] > target
-        or arr[-1] < target:
+
+def first_and_last(arr: list, target: int) -> list:
+    if len(arr) == 0
+    or arr[0] > target
+    or arr[-1] < target:
         return [-1, -1]
     start = find_start(arr, target)
     end = find_end(arr, target)
     return [start, end]
 
-arr = [2,4,5,5,5,5,5,7.9,9]
+
+arr = [2, 4, 5, 5, 5, 5, 5, 7.9, 9]
 target = 5
 print(first_and_last(arr, target))
+
 
 def longestConsecutive(nums: List[int]) -> int:
     numSet = set(nums)
@@ -656,10 +681,13 @@ def longestConsecutive(nums: List[int]) -> int:
             longest = max(length, longest)
     return longest
 
+
 """
 Top k frequent elements in a list of string
 O(n)
 """
+
+
 def topKFrequent(self, nums: List[int], k: int) -> List[int]:
     count = {}
     freq = [[] for i in range(len(nums) + 1)]
@@ -676,9 +704,12 @@ def topKFrequent(self, nums: List[int], k: int) -> List[int]:
             if len(res) == k:
                 return res
 
+
 """
 Trapping rain water
 """
+
+
 def trap(self, height: List[int]) -> int:
     if not height:
         return 0
@@ -745,7 +776,7 @@ def is_valid_zip(zip_code):
             c += 1
         if c == 5:
             return True
-        
+
     except ValueError:
         print(f'invalid literal for int() with base 10: {zip_code}')
     except TypeError:
