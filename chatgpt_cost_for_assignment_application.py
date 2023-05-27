@@ -78,5 +78,9 @@ params = {
     "assignment_sub_count": 8,
 }
 
+print(params)
+
 cost = calculate_cost(params)
-print(f"The total cost is: ${cost:.2f}")
+print(
+    f"The total cost of using chatgpt for assignment application of {params['students']} students and {params['assignment_sub_count']} subjects is: ${cost:.2f}"
+)
