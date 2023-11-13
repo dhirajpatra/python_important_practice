@@ -3,6 +3,11 @@ Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]]
 
 Notice that the solution set must not contain duplicate triplets.
 
+<<<<<<< HEAD
+=======
+ 
+
+>>>>>>> eeb5309a91ff43c2bfab146d35663d62a81c2d3e
 Example 1:
 
 Input: nums = [-1,0,1,2,-1,-4]
@@ -79,6 +84,10 @@ class Solution:
         return list(set(tuple(result) for result in results))
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> eeb5309a91ff43c2bfab146d35663d62a81c2d3e
 solution = Solution()
 nums = [-1, 0, 1, 2, -1, -4]
 result = solution.threeSum(nums)

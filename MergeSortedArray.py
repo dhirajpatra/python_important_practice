@@ -5,6 +5,11 @@ Merge nums1 and nums2 into a single array sorted in non-decreasing order.
 
 The final sorted array should not be returned by the function, but instead be stored inside the array nums1. To accommodate this, nums1 has a length of m + n, where the first m elements denote the elements that should be merged, and the last n elements are set to 0 and should be ignored. nums2 has a length of n.
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> eeb5309a91ff43c2bfab146d35663d62a81c2d3e
 Example 1:
 
 Input: nums1 = [1,2,3,0,0,0], m = 3, nums2 = [2,5,6], n = 3
@@ -60,6 +65,10 @@ class Solution:
                 nums1[p] = nums2[p2]
                 p2 -= 1
             p -= 1
+<<<<<<< HEAD
+=======
+            # print(nums1)
+>>>>>>> eeb5309a91ff43c2bfab146d35663d62a81c2d3e
 
         # If there are remaining elements in nums2, copy them to nums1
         while p2 >= 0:
@@ -109,6 +118,7 @@ def test_merge():
     solution.merge(nums1, m, nums2, n)
     print(nums1)  # Expected output: [1]
 
+<<<<<<< HEAD
     # Test case 4
     nums1 = [1, 2, 3, 0, 0, 0, 4]
     m = 3
@@ -122,6 +132,8 @@ def test_merge():
     solution.merge(nums1, m, nums2, n)
     print(nums1)  # Expected output: [1, 2, 2, 3, 5, 6]
 
+=======
+>>>>>>> eeb5309a91ff43c2bfab146d35663d62a81c2d3e
 
 if __name__ == "__main__":
     test_merge()

@@ -3,6 +3,11 @@ Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]]
 
 Notice that the solution set must not contain duplicate triplets.
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> eeb5309a91ff43c2bfab146d35663d62a81c2d3e
 Example 1:
 
 Input: nums = [-1,0,1,2,-1,-4]
@@ -30,6 +35,7 @@ Constraints:
 3 <= nums.length <= 3000
 -105 <= nums[i] <= 105
 """
+<<<<<<< HEAD
 from typing import List
 
 
@@ -53,10 +59,26 @@ class Solution:
 
             # Check for triplets with a sum of zero
             # continues until the left and right pointers meet or cross each other.
+=======
+
+
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]:
+        nums.sort()
+        result = []
+
+        for i in range(len(nums) - 2):
+            if i > 0 and nums[i] == nums[i - 1]:
+                continue
+
+            left, right = i + 1, len(nums) - 1
+
+>>>>>>> eeb5309a91ff43c2bfab146d35663d62a81c2d3e
             while left < right:
                 total = nums[i] + nums[left] + nums[right]
 
                 if total == 0:
+<<<<<<< HEAD
                     # Found a triplet with a sum of zero, add it to the result
                     result.append([nums[i], nums[left], nums[right]])
 
@@ -74,6 +96,20 @@ class Solution:
                     left += 1
                 else:
                     # The sum is too large, move the right pointer to the left
+=======
+                    result.append([nums[i], nums[left], nums[right]])
+
+                    while left < right and nums[left] == nums[left + 1]:
+                        left += 1
+                    while left < right and nums[right] == nums[right - 1]:
+                        right -= 1
+
+                    left += 1
+                    right -= 1
+                elif total < 0:
+                    left += 1
+                else:
+>>>>>>> eeb5309a91ff43c2bfab146d35663d62a81c2d3e
                     right -= 1
 
         return result
@@ -86,8 +122,11 @@ if __name__ == "__main__":
     result = solution.threeSum(nums)
     print(result)  # Output: [[-1, -1, 2], [-1, 0, 1]]
 
+<<<<<<< HEAD
     nums = [-1, -2, 1, 0, -1, -2, 0, -1]
     result = solution.threeSum(nums)
     print(result)  # Output: [[-1, 0, 1]]
 
+=======
+>>>>>>> eeb5309a91ff43c2bfab146d35663d62a81c2d3e
 
