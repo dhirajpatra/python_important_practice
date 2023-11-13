@@ -1,4 +1,29 @@
 from random import randint
+import sys
+
+
+# Python program for implementation of Selection
+# Sort O(n^2)
+def selection_sort(A):
+
+    # Traverse through all array elements
+    for i in range(len(A)):
+        
+        # Find the minimum element in remaining
+        # unsorted array
+        min_idx = i
+        for j in range(i+1, len(A)):
+            if A[min_idx] > A[j]:
+                min_idx = j
+                
+        # Swap the found minimum element with
+        # the first element 
+        A[i], A[min_idx] = A[min_idx], A[i]
+
+    # Driver code to test above
+    print ("Sorted array")
+    for i in range(len(A)):
+        print("%d" %A[i]),
 
 
 # O(n^2) fastest sort
@@ -34,7 +59,7 @@ def bubble_sort(array):
     return array
 
 
-# O(n2)
+# O(n^2)
 def insertion_sort(array):
     # Loop from the second element of the array until
     # the last element
@@ -162,3 +187,5 @@ print(bubble_sort(lst))
 print(insertion_sort(lst))
 print(merge_sort(lst))
 print(quicksort(lst))
+print(selection_sort(lst))
+
